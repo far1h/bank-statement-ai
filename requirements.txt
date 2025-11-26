@@ -2,7 +2,7 @@ tabula-py
 tqdm 
 openpyxl 
 pandas 
-numpy
+numpy<2.0.0
 pdf2image 
 result 
 pillow 
