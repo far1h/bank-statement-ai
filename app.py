@@ -13,6 +13,55 @@ from io import BytesIO
 # --- CONFIGURATION ---
 st.set_page_config(page_title="BCA Statement Processor", layout="wide")
 
+# ==========================================
+#          PASSWORD PROTECTION
+# ==========================================
+# CHANGE YOUR PASSWORD HERE
+ACCEPTED_PASSWORD = "admin123"
+
+def check_password():
+    """Returns `True` if the user had the correct password."""
+    
+    def password_entered():
+        """Checks whether a password entered by the user is correct."""
+        if st.session_state["password_input"] == ACCEPTED_PASSWORD:
+            st.session_state["password_correct"] = True
+            del st.session_state["password_input"]  # Clean up
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        # First run, show input
+        st.text_input(
+            "Enter Password to Access:", 
+            type="password", 
+            on_change=password_entered, 
+            key="password_input"
+        )
+        return False
+    
+    elif not st.session_state["password_correct"]:
+        # Password incorrect, show input + error
+        st.text_input(
+            "Enter Password to Access:", 
+            type="password", 
+            on_change=password_entered, 
+            key="password_input"
+        )
+        st.error("😕 Password incorrect. Please try again.")
+        return False
+    
+    else:
+        # Password correct
+        return True
+
+if not check_password():
+    st.stop()  # STOPS execution here if auth fails
+
+# ==========================================
+#          MAIN APP LOGIC
+# ==========================================
+
 # --- COORDINATE CONSTANTS (Easily Editable) ---
 # Format: (top, left, bottom, right) for Tabula
 HEADER_AREA = (70, 315, 141, 548)
